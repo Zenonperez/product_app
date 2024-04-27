@@ -4,25 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:productes_app/authentification/auth.dart';
 import 'package:productes_app/providers/login_form_provider.dart';
-import 'package:productes_app/screens/register_screen.dart';
+import 'package:productes_app/screens/login_screen.dart';
 import 'package:productes_app/ui/input_decorations.dart';
+import 'package:productes_app/widgets/auth_background_register.dart';
 import 'package:productes_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
  bool isitLogin = true;
 
-class LoginScreen extends StatefulWidget {  
+class RegisterScreen extends StatefulWidget {  
  
  @override
- State<LoginScreen> createState() => _LoginScreenState();
+ State<RegisterScreen> createState() => _RegisterScreenState();
 
 }
 
-class _LoginScreenState extends State<LoginScreen>{
+class _RegisterScreenState extends State<RegisterScreen>{
 
-  bool _isitLogin = isitLogin;
-  String loginRegister = 'Login';
-  String textoBoton = 'Crear una cuenta nueva';
+  String loginRegister = 'Register';
+  String textoBoton = 'Iniciar sesion con una cuenta existente';
  
  
   @override
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen>{
 
     
     return Scaffold(
-      body: AuthBackground(
+      body: AuthBackgroundRegister(
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -51,10 +51,7 @@ class _LoginScreenState extends State<LoginScreen>{
               SizedBox(height: 20),
               TextButton(
                 onPressed: (){
-                
-                  Navigator.push(context, PageTransition(child: RegisterScreen(), type: PageTransitionType.rightToLeft) );
-
-                  
+                Navigator.push(context, PageTransition(child: LoginScreen(), type: PageTransitionType.leftToRight) );
                 },
                 child: Text( textoBoton,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -129,7 +126,7 @@ class _LoginForm extends StatelessWidget {
                 child: Text(
                   loginForm.isLoading 
                   ? 'Esperi' 
-                  : 'Iniciar sesion',
+                  : 'Crear cuenta',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -143,15 +140,15 @@ class _LoginForm extends StatelessWidget {
                         loginForm.isLoading = true;
                         try{
 
-                          await Auth().singInWithEmailAndPassword(loginForm.email, loginForm.password);
+                          await Auth().registerWithEmailAndPassword(loginForm.email, loginForm.password);
                           await Future.delayed(Duration(seconds: 2));
                           Navigator.pushReplacementNamed(context, 'home');
 
                           }on FirebaseAuthException catch (e){
-                            if (e.code == 'invalid-credential'){
-                                _error = 'Error: Los datos aportados son erroneos, es posible que no exista el usuario o la contraseña este mal';
+                            if (e.code == 'email-already-in-use'){
+                                _error = 'Error este mail ya esta en uso y registrado';
                             }  else {
-                              _error = 'Error al iniciar sesion: ${e.message}';
+                              _error = 'Error de registro: ${e.message}';
                             }
                           } ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -160,11 +157,13 @@ class _LoginForm extends StatelessWidget {
                               duration: Duration(
                                 seconds: 5),
                               ));
-                        
                         }
 
                         loginForm.isLoading = false;
+
+                         
                       },
+                  
             ),
           ],
         ),

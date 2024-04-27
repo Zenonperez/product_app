@@ -1,0 +1,16 @@
+{
+    "products": {
+      "asd123": {
+        "avalible": false,
+        "name": "RTX 4080",
+        "picture": "https://thumb.pccomponentes.com/w-530-530/articles/1081/10811516/1462-msi-geforce-rtx-4080-super-gaming-x-slim-16gb-gddr6x-dlss3.jpg",
+        "price": 1190
+      },
+      "qwe123": {
+        "available": true,
+        "name": "PC Gamer",
+        "picture": "https://thumb.pccomponentes.com/w-530-530/articles/1073/10734137/1552-neo-pc-gamer-amd-ryzen-5-4600g-16gb-480gb-ssd-opiniones.jpg",
+        "price": 499
+      }
+    }
+  }

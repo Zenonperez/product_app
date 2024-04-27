@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1035681477939",
+    "firebase_url": "https://flutter-app-productos-21bac-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flutter-app-productos-21bac",
+    "storage_bucket": "flutter-app-productos-21bac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035681477939:android:dfc4fb7e5827b4b5303a46",
+        "android_client_info": {
+          "package_name": "com.example.productes_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_g-P6scFlWNXd814PJ8fmEv3Qf8ZkDhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
