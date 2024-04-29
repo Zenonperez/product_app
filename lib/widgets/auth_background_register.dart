@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+//Widget que se encarga de la estetica de fondo de pantalla de la register screen.
 class AuthBackgroundRegister extends StatelessWidget {
   final Widget child;
 
-  const AuthBackgroundRegister({Key? key, required this.child}) : super(key: key);
+  const AuthBackgroundRegister({Key? key, required this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,7 @@ class AuthBackgroundRegister extends StatelessWidget {
       height: double.infinity,
       child: Stack(
         children: [
-          _PurpleBox(),
+          _BlackBox(),
           _HeaderIcon(),
           this.child,
         ],
@@ -34,7 +36,8 @@ class _HeaderIcon extends StatelessWidget {
   }
 }
 
-class _PurpleBox extends StatelessWidget {
+//A diferencia del fondo de login este sera negro lo cual se utiliza para diferenciarlo del otro.
+class _BlackBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -42,7 +45,7 @@ class _PurpleBox extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: size.height * 0.4,
-      decoration: _purpleBoxDecoration(),
+      decoration: _blackBoxDecoration(),
       child: Stack(
         children: [
           Positioned(child: _Bubble(), top: 90, left: 30),
@@ -55,7 +58,7 @@ class _PurpleBox extends StatelessWidget {
     );
   }
 
-  BoxDecoration _purpleBoxDecoration() => BoxDecoration(
+  BoxDecoration _blackBoxDecoration() => BoxDecoration(
         gradient: LinearGradient(
           colors: [
             Colors.black,

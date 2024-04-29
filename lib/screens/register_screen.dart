@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:productes_app/authentification/auth.dart';
@@ -10,25 +9,12 @@ import 'package:productes_app/widgets/auth_background_register.dart';
 import 'package:productes_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
- bool isitLogin = true;
-
-class RegisterScreen extends StatefulWidget {  
- 
- @override
- State<RegisterScreen> createState() => _RegisterScreenState();
-
-}
-
-class _RegisterScreenState extends State<RegisterScreen>{
-
-  String loginRegister = 'Register';
-  String textoBoton = 'Iniciar sesion con una cuenta existente';
- 
- 
+//Screen similar a la de login pero en vez de inciar sesion sirve para registrar un usuario.
+//Esta pantalla crea un usuario en la base de datos para después hacer que pueda iniciar sesion en la aplicación.
+//Este usuario al rellenar sus datos lo mandara de vuelta a la login screen para poder iniciar la sesion del usuario creado.
+class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-    
     return Scaffold(
       body: AuthBackgroundRegister(
         child: SingleChildScrollView(
@@ -39,23 +25,30 @@ class _RegisterScreenState extends State<RegisterScreen>{
                 child: Column(
                   children: [
                     SizedBox(height: 10),
-                    Text( loginRegister, style: Theme.of(context).textTheme.headline4),
+                    Text('Register',
+                        style: Theme.of(context).textTheme.headline4),
                     SizedBox(height: 30),
                     ChangeNotifierProvider(
                       create: (_) => LoginFormProvider(),
-                      child: _LoginForm(),
+                      child: _RegisterForm(),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 20),
               TextButton(
-                onPressed: (){
-                Navigator.push(context, PageTransition(child: LoginScreen(), type: PageTransitionType.leftToRight) );
+                //Si se pulsa este texto boton te mandara de vuelta a la login screen para que incies la sesion de un usuario.
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: LoginScreen(),
+                          type: PageTransitionType.leftToRight));
                 },
-                child: Text( textoBoton,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ),
+                child: Text('Iniciar sesion con una cuenta existente',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
               SizedBox(height: 30),
             ],
           ),
@@ -65,19 +58,17 @@ class _RegisterScreenState extends State<RegisterScreen>{
   }
 }
 
-class _LoginForm extends StatelessWidget {
-  
+//Clase que validara el registro usando el provider de loginForm debido a que es similar solo que en vez de logearlo realizara un register pero utilizan lo mismo.
+class _RegisterForm extends StatelessWidget {
   String _error = '';
-  
+
   @override
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
-    bool StateLogin = isitLogin;
 
     return Container(
       child: Form(
         key: loginForm.formKey,
-        //TODO: Mantenir la referencia a la Key
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: [
@@ -90,6 +81,7 @@ class _LoginForm extends StatelessWidget {
                 prefixIcon: Icons.alternate_email_outlined,
               ),
               onChanged: (value) => loginForm.email = value,
+              //Verificara que el este campo se trate un correo electronico para poder ealizar el formulario
               validator: (value) {
                 String pattern =
                     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -108,6 +100,7 @@ class _LoginForm extends StatelessWidget {
                 prefixIcon: Icons.lock_outline,
               ),
               onChanged: (value) => loginForm.password = value,
+              //Verificara que este campo no sea menor a 6 caracteres, si fuese menor no dejaria realizara el fomrulario.
               validator: (value) {
                 return (value != null && value.length >= 6)
                     ? null
@@ -124,46 +117,54 @@ class _LoginForm extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                 child: Text(
-                  loginForm.isLoading 
-                  ? 'Esperi' 
-                  : 'Crear cuenta',
+                  loginForm.isLoading ? 'Esperi' : 'Crear cuenta',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
               onPressed:
-                loginForm.isLoading
-                  ? null
-                  : () async {
-                      // Deshabilitam el teclat
-                      FocusScope.of(context).unfocus();        
-                      if (loginForm.isValidForm()) {
-                        loginForm.isLoading = true;
-                        try{
-
-                          await Auth().registerWithEmailAndPassword(loginForm.email, loginForm.password);
-                          await Future.delayed(Duration(seconds: 2));
-                          Navigator.pushReplacementNamed(context, 'home');
-
-                          }on FirebaseAuthException catch (e){
-                            if (e.code == 'email-already-in-use'){
-                                _error = 'Error este mail ya esta en uso y registrado';
-                            }  else {
-                              _error = 'Error de registro: ${e.message}';
-                            }
-                          } ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                _error), 
-                              duration: Duration(
-                                seconds: 5),
+                  //Boton que al pulsarlo registrara la cuenta siempre que este correctamente escrita bien en el formulario
+                  //Al acabar nos enviara a la pagina de login para pdoer iniciar sesion.
+                  loginForm.isLoading
+                      //Si esta cargando no dejara pulsar el boton
+                      ? null
+                      //De lo contrario si que dejara pulsarlo y nos dejara inciar sesion.
+                      : () async {
+                          // Deshabilitam el teclat
+                          FocusScope.of(context).unfocus();
+                          if (loginForm.isValidForm()) {
+                            loginForm.isLoading = true;
+                            try {
+                              await Auth().registerWithEmailAndPassword(
+                                  loginForm.email, loginForm.password);
+                              await Future.delayed(Duration(seconds: 2));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content:
+                                    Text('Cuenta registrada correctamente'),
+                                duration: Duration(seconds: 5),
                               ));
-                        }
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      child: LoginScreen(),
+                                      type: PageTransitionType.leftToRight));
+                              //Se capturaran las excepciones en el memento que haya un error en el registro.
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'email-already-in-use') {
+                                _error =
+                                    'Error este mail ya esta en uso y registrado';
+                              } else {
+                                _error = 'Error de registro: ${e.message}';
+                              }
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(_error),
+                              duration: Duration(seconds: 5),
+                            ));
+                          }
 
-                        loginForm.isLoading = false;
-
-                         
-                      },
-                  
+                          loginForm.isLoading = false;
+                        },
             ),
           ],
         ),

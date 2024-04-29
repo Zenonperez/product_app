@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Clase que se encarga de la decoración ui de la login screen
 class InputDecorations {
   static InputDecoration authInputDecoration({
     required String hintText,

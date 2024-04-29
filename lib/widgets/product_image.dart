@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+//Widget que se encarga de administrar las imagenes del producto que representa su carta.
 class ProductImage extends StatelessWidget {
   final String? url;
 
@@ -45,12 +46,12 @@ class ProductImage extends StatelessWidget {
         fit: BoxFit.cover,
       );
 
-      if (picture.startsWith('http'))
-        return FadeInImage(
-            placeholder: AssetImage('assets/jar-loading.gif'),
-            image: NetworkImage(url!),
-            fit: BoxFit.cover);
-            
-      return Image.file(File(picture), fit: BoxFit.cover);
+    if (picture.startsWith('http'))
+      return FadeInImage(
+          placeholder: AssetImage('assets/jar-loading.gif'),
+          image: NetworkImage(url!),
+          fit: BoxFit.cover);
+
+    return Image.file(File(picture), fit: BoxFit.cover);
   }
 }

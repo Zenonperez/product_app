@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Widget que se encarga de la estetica de fondo de pantalla de la login screen.
 class AuthBackground extends StatelessWidget {
   final Widget child;
 
@@ -34,6 +35,7 @@ class _HeaderIcon extends StatelessWidget {
   }
 }
 
+//A diferencia de la register screen este tiene el fondo lila para diferenciar uno de otro.
 class _PurpleBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

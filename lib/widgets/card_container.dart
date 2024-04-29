@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Widget que se encarga utilizar contairners para guardar los productos dentro de estos.
 class CardContainer extends StatelessWidget {
   final Widget child;
 

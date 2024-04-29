@@ -9,6 +9,9 @@ import 'package:provider/provider.dart';
 
 import '../ui/input_decorations.dart';
 
+//Screen la cual se mostrara el producto al clicarlo en la pantalla home.
+//Aqui podremos ver los datos del producto y actualizarlos al modificarlos si pulsamos el boton de guardar.
+//También con la cámara podemso cambiar la foto del producto.
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key}) : super(key: key);
 
@@ -16,8 +19,9 @@ class ProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final productsService = Provider.of<ProductsService>(context);
 
-    return ChangeNotifierProvider(create: ( _ ) => ProductFormProvider(productsService.selectedProduct),
-    child: _ProductScreenBody(productsService: productsService) );
+    return ChangeNotifierProvider(
+        create: (_) => ProductFormProvider(productsService.selectedProduct),
+        child: _ProductScreenBody(productsService: productsService));
   }
 }
 
@@ -55,17 +59,16 @@ class _ProductScreenBody extends StatelessWidget {
                   top: 60,
                   right: 20,
                   child: IconButton(
+                    //Boton que al pulsarlo activara la camara para sacar una foto y si lo guardamos vendra a ser la foto del producto.
                     onPressed: () async {
-                      //TODO: Implementar funcionalitat de cercar imatge de la galeria
                       final ImagePicker picker = ImagePicker();
-                      // Pick an image.
+                      // Tambien esta comentada aqui la función de usar la foto de la galeria del telefono.
                       //final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                      // Capture a photo.
-                      final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+                      final XFile? photo =
+                          await picker.pickImage(source: ImageSource.camera);
                       print(photo!.path);
-
+                      //Aqui se cambiara la imagen del producto de manera temporal a no ser que se pulse guardar.
                       productsService.updateSelectedImage(photo.path);
-                                          
                     },
                     icon: Icon(
                       Icons.camera_alt_outlined,
@@ -83,24 +86,26 @@ class _ProductScreenBody extends StatelessWidget {
           ],
         ),
       ),
+      //Boton que guardara los cambios realizados en el prodcuto siemrpe que se rellene correctamente el form del producto.
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
           child: productsService.isSaving
-          ? CircularProgressIndicator(color: Colors.white)
-          : Icon(Icons.save_outlined),
+              ? CircularProgressIndicator(color: Colors.white)
+              : Icon(Icons.save_outlined),
           onPressed: productsService.isSaving
-          ? null
-          : () async {
-           if (!productForm.isValidForm()) return;
-           final String? imageUrl = await productsService.uploadImage();
-           if (imageUrl != null) productForm.tempProduct.picture = imageUrl;
-          productsService.saveOrCreateProduct(productForm.tempProduct);
-          } 
-          ),
+              ? null
+              : () async {
+                  if (!productForm.isValidForm()) return;
+                  final String? imageUrl = await productsService.uploadImage();
+                  if (imageUrl != null)
+                    productForm.tempProduct.picture = imageUrl;
+                  productsService.saveOrCreateProduct(productForm.tempProduct);
+                }),
     );
   }
 }
 
+//Clase que controlara que el form correcto para la modificacion del producto.
 class _ProductForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -123,8 +128,8 @@ class _ProductForm extends StatelessWidget {
                 initialValue: tempProduct.name,
                 onChanged: ((value) => tempProduct.name = value),
                 validator: (value) {
-                  if ( value == null || value.length < 1)
-                  return 'El nombre es obligatorio';
+                  if (value == null || value.length < 1)
+                    return 'El nombre es obligatorio';
                 },
                 decoration: InputDecorations.authInputDecoration(
                     hintText: 'Nom del producte', labelText: 'Nom:'),
@@ -132,19 +137,20 @@ class _ProductForm extends StatelessWidget {
               SizedBox(height: 30),
               TextFormField(
                 initialValue: '${tempProduct.price}',
-                inputFormatters: [FilteringTextInputFormatter.allow(
-                  RegExp(r'^(\d+)?\.?\d{0,2}')),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}')),
                 ],
                 onChanged: (value) {
-                  if (double.tryParse(value) == null){
+                  if (double.tryParse(value) == null) {
                     tempProduct.price = 0;
                   } else {
                     tempProduct.price = double.parse(value);
                   }
                 },
                 validator: (value) {
-                  if ( value == null || value.length < 1)
-                  return 'El precio es obligatorio';
+                  if (value == null || value.length < 1)
+                    return 'El precio es obligatorio';
                 },
                 keyboardType: TextInputType.number,
                 decoration: InputDecorations.authInputDecoration(
